@@ -1,5 +1,6 @@
 package com.compassuol.sp.challenge.msaddress.domain.model;
 
+import com.compassuol.sp.challenge.msaddress.web.dto.AddressResponseDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,4 +31,19 @@ public class Address implements Serializable {
 
     @Column(name = "cep", nullable = false)
     private String cep;
+
+    public Address(String street, String city, String state, String cep) {
+        this.street = street;
+        this.city = city;
+        this.state = state;
+        this.cep = cep;
+    }
+
+    public AddressResponseDTO toDTO() {
+        return new AddressResponseDTO(
+                this.street,
+                this.city,
+                this.state,
+                this.cep);
+    }
 }

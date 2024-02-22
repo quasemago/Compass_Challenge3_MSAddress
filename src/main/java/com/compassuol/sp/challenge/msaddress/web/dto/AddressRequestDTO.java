@@ -1,5 +1,6 @@
 package com.compassuol.sp.challenge.msaddress.web.dto;
 
+import com.compassuol.sp.challenge.msaddress.domain.model.Address;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -18,4 +19,12 @@ public class AddressRequestDTO {
     private String cep;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String erro;
+
+    public Address toModel() {
+        return new Address(
+                this.street,
+                this.city,
+                this.state,
+                this.cep);
+    }
 }
