@@ -2,10 +2,7 @@ package com.compassuol.sp.challenge.msaddress.domain.model;
 
 import com.compassuol.sp.challenge.msaddress.web.dto.AddressResponseDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -15,6 +12,8 @@ import java.io.Serializable;
 @Table(name = "addresses")
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
+@Builder
 public class Address implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
