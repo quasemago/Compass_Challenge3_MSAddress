@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ApiExceptionHandler {
     @ExceptionHandler(AddressNotFoundException.class)
-    public ResponseEntity<ErrorMessageDTO> handleAddressNotFoundException(RuntimeException ex) {
+    public ResponseEntity<ErrorMessageDTO> handleAddressNotFoundException(AddressNotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -20,7 +20,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(AddressFormatNotValidException.class)
-    public ResponseEntity<ErrorMessageDTO> handleAddressFormatNotValidException(RuntimeException ex) {
+    public ResponseEntity<ErrorMessageDTO> handleAddressFormatNotValidException(AddressFormatNotValidException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -28,10 +28,10 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessageDTO> handleGenericException(Exception ex) {
+    public ResponseEntity<ErrorMessageDTO> handleGenericException() {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessageDTO(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage()));
+                .body(new ErrorMessageDTO(HttpStatus.INTERNAL_SERVER_ERROR, "Ocorreu um erro inesperado."));
     }
 }
