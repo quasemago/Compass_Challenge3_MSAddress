@@ -29,11 +29,12 @@ public class AddressService {
             return existingAddress.get();
         }
 
-        final AddressRequestDTO newAddress = viaCepConsumer.getAddressByCep(cep);
-        if (newAddress.getErro() != null) {
+        final AddressRequestDTO request = viaCepConsumer.getAddressByCep(cep);
+        if (request.getErro() != null) {
             throw new AddressNotFoundException("O CEP informado {" + cep + "} não foi encontrado!");
         }
 
-        return repository.save(newAddress.toModel());
+        final Address savedAddress = new Address(request.getStreet(), request.getCity(), request.getState(), request.getCep());
+        return repository.save(savedAddress);
     }
 }
