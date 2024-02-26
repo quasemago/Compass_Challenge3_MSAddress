@@ -18,6 +18,11 @@ spring:
     format:
       date-time: iso
 
+security:
+  jwt:
+    token:
+      secret-key: ${CHALLENGE3_JWT_SECRET:909266500255685261705041354583000}
+
 springdoc:
   swagger-ui:
     path: /docs-msaddress.html
