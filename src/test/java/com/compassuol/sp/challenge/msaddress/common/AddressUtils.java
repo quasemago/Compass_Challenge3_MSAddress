@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AddressUtils {
     public static Address VALID_ADDRESS = new Address("Praça da Sé", "São Paulo", "SP", "01001-000");
+    public static String VALID_JWT_SECRETKEY = "217969690605818764702766367087001";
 
     public static Address mockValidAddress() {
         return Address.builder()
@@ -24,5 +25,9 @@ public class AddressUtils {
 
     public static AddressRequestDTO mockInvalidAddressRequestDTO() {
         return new AddressRequestDTO(null, null, null, null, "erro");
+    }
+
+    public static String mockJwtToken() {
+        return "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYyMzIwNzEwMH0.3J";
     }
 }
