@@ -1,6 +1,7 @@
 package com.compassuol.sp.challenge.msaddress.web.controller;
 
 import com.compassuol.sp.challenge.msaddress.domain.service.AddressService;
+import com.compassuol.sp.challenge.msaddress.security.jwt.JwtTokenService;
 import com.compassuol.sp.challenge.msaddress.web.dto.AddressResponseDTO;
 import com.compassuol.sp.challenge.msaddress.web.dto.ErrorMessageDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,11 +12,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Address", description = "API Address - Tem como objetivo fornecer informações de endereços a partir de um CEP.")
 @RestController
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AddressController {
     private final AddressService service;
+    private final JwtTokenService jwtService;
 
     @Operation(summary = "Recuperar informações de um endereço.",
             description = "Recurso para recuperar um endereço através do CEP (Código Postal).",
@@ -43,8 +44,17 @@ public class AddressController {
             }
     )
     @GetMapping("/{cep}")
-    public ResponseEntity<AddressResponseDTO> getAddressByCep(@PathVariable("cep") String cep) {
-        final AddressResponseDTO response = service.findOrCreateAddressByCep(cep).toDTO();
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> getAddressByCep(@PathVariable("cep") String cep,
+                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            final String jwtToken = authorizationHeader.substring(7);
+            if (jwtService.resolveToken(jwtToken) != null) {
+                final AddressResponseDTO response = service.findOrCreateAddressByCep(cep).toDTO();
+                return ResponseEntity.ok(response);
+            }
+        }
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .build();
     }
 }
