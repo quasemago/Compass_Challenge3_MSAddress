@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -27,15 +28,21 @@ public class AddressController {
 
     @Operation(summary = "Recuperar informações de um endereço.",
             description = "Recurso para recuperar um endereço através do CEP (Código Postal).",
+            security = @SecurityRequirement(name = "BearerTokenAuthentication"),
             parameters = {
                     @Parameter(name = "cep", description = "CEP (Código Postal) do endereço para consulta.",
-                            in = ParameterIn.PATH, required = true)
+                            in = ParameterIn.PATH, required = true),
+                    @Parameter(name = "Authorization", description = "Bearer Token para autenticação.",
+                            in = ParameterIn.HEADER, required = true)
             },
             responses = {
                     @ApiResponse(responseCode = "200", description = "Endereço recuperado com sucesso.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = AddressResponseDTO.class))
                     ),
                     @ApiResponse(responseCode = "400", description = "Recurso não processado devido a requisição inválida.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessageDTO.class))
+                    ),
+                    @ApiResponse(responseCode = "401", description = "Recurso não processado devido a falha na autenticação.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessageDTO.class))
                     ),
                     @ApiResponse(responseCode = "404", description = "Endereço não encontrado para o CEP informado.",
