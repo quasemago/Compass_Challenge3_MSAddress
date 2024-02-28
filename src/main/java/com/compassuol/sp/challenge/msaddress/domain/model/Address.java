@@ -40,6 +40,7 @@ public class Address implements Serializable {
 
     public AddressResponseDTO toDTO() {
         return new AddressResponseDTO(
+                this.id,
                 this.street,
                 this.city,
                 this.state,
