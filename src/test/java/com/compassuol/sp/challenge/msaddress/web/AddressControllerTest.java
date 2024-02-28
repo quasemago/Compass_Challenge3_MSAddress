@@ -43,10 +43,10 @@ public class AddressControllerTest {
     private JwtTokenService jwtService;
 
     @Test
-    public void getAddressByCep_WithValidData_ReturnsAddressResponse() throws Exception {
+    public void getOrCreateAddress_WithValidData_ReturnsAddressResponse() throws Exception {
         final Address validAddress = mockValidAddress();
 
-        when(service.findOrCreateAddressByCep(anyString())).thenReturn(validAddress);
+        when(service.findOrCreateAddress(anyString())).thenReturn(validAddress);
         when(jwtService.resolveToken(anyString())).thenReturn(mock(Claims.class));
 
         final AddressResponseDTO responseBody = validAddress.toDTO();
@@ -59,12 +59,12 @@ public class AddressControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(responseBody)));
 
-        verify(service, times(1)).findOrCreateAddressByCep(anyString());
+        verify(service, times(1)).findOrCreateAddress(anyString());
     }
 
     @Test
-    public void getAddressByCep_WithInvalidData_ReturnsBadRequest() throws Exception {
-        when(service.findOrCreateAddressByCep(anyString())).thenThrow(AddressFormatNotValidException.class);
+    public void getOrCreateAddress_WithInvalidData_ReturnsBadRequest() throws Exception {
+        when(service.findOrCreateAddress(anyString())).thenThrow(AddressFormatNotValidException.class);
         when(jwtService.resolveToken(anyString())).thenReturn(mock(Claims.class));
 
         mockMvc.perform(
@@ -74,12 +74,12 @@ public class AddressControllerTest {
                 )
                 .andExpect(status().isBadRequest());
 
-        verify(service, times(1)).findOrCreateAddressByCep(anyString());
+        verify(service, times(1)).findOrCreateAddress(anyString());
     }
 
     @Test
-    public void getAddressByCep_WithNonExistingCep_ReturnsNotFound() throws Exception {
-        when(service.findOrCreateAddressByCep(anyString())).thenThrow(AddressNotFoundException.class);
+    public void getOrCreateAddress_WithNonExistingCep_ReturnsNotFound() throws Exception {
+        when(service.findOrCreateAddress(anyString())).thenThrow(AddressNotFoundException.class);
         when(jwtService.resolveToken(anyString())).thenReturn(mock(Claims.class));
 
         mockMvc.perform(
@@ -89,11 +89,11 @@ public class AddressControllerTest {
                 )
                 .andExpect(status().isNotFound());
 
-        verify(service, times(1)).findOrCreateAddressByCep(anyString());
+        verify(service, times(1)).findOrCreateAddress(anyString());
     }
 
     @Test
-    public void getAddressByCep_WithEmptyCep_ReturnsInternalServerError() throws Exception {
+    public void getOrCreateAddress_WithEmptyCep_ReturnsInternalServerError() throws Exception {
         mockMvc.perform(
                         get("/v1/address/{cep}", "")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -102,7 +102,7 @@ public class AddressControllerTest {
     }
 
     @Test
-    public void getAddressByCep_WithMissingAuthorizationHeader_ReturnsBadRequest() throws Exception {
+    public void getOrCreateAddress_WithMissingAuthorizationHeader_ReturnsBadRequest() throws Exception {
         mockMvc.perform(
                         get("/v1/address/{cep}", "01000-000")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -111,7 +111,7 @@ public class AddressControllerTest {
     }
 
     @Test
-    public void getAddressByCep_WithEmptyAuthorizationHeader_ReturnsUnauthorized() throws Exception {
+    public void getOrCreateAddress_WithEmptyAuthorizationHeader_ReturnsUnauthorized() throws Exception {
         mockMvc.perform(
                         get("/v1/address/{cep}", "01000-000")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -121,7 +121,7 @@ public class AddressControllerTest {
     }
 
     @Test
-    public void getAddressByCep_WithInvalidOrExpiredJwtToken_ReturnsUnauthorized() throws Exception {
+    public void getOrCreateAddress_WithInvalidOrExpiredJwtToken_ReturnsUnauthorized() throws Exception {
         when(jwtService.resolveToken(anyString())).thenThrow(JwtException.class);
 
         mockMvc.perform(

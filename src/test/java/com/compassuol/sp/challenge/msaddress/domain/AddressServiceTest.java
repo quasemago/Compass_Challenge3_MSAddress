@@ -32,45 +32,65 @@ public class AddressServiceTest {
     private ViaCepClientConsumer viaCepClientConsumer;
 
     @Test
-    public void findOrCreateAddressByCep_WithValidDataAndExistingAddress_ReturnsAddress() {
+    public void findOrCreateAddress_WithValidDataAndExistingAddress_ReturnsAddress() {
         final Address validAddress = mockValidAddress();
 
         when(addressRepository.findByCep(anyString())).thenReturn(Optional.of(validAddress));
 
-        Address sut = service.findOrCreateAddressByCep("01001-000");
+        Address sut = service.findOrCreateAddress("01001-000");
 
         assertThat(sut).isNotNull();
         assertThat(sut).isEqualTo(validAddress);
     }
 
     @Test
-    public void findOrCreateAddressByCep_WithValidDataAndNonExistingAddress_ReturnsAddress() {
+    public void findOrCreateAddress_WithExistingAddressId_ReturnsAddress() {
+        final Address validAddress = mockValidAddress();
+
+        when(addressRepository.findById(1L)).thenReturn(Optional.of(validAddress));
+
+        Address sut = service.findOrCreateAddress("1");
+
+        assertThat(sut).isNotNull();
+        assertThat(sut).isEqualTo(validAddress);
+    }
+
+    @Test
+    public void findOrCreateAddress_WithNonExistingAddressId_ThrowsException() {
+        when(addressRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.findOrCreateAddress("1"))
+                .isInstanceOf(AddressNotFoundException.class);
+    }
+
+    @Test
+    public void findOrCreateAddress_WithValidDataAndNonExistingAddress_ReturnsAddress() {
         final Address validAddress = mockValidAddress();
 
         when(addressRepository.findByCep(anyString())).thenReturn(Optional.empty());
         when(viaCepClientConsumer.getAddressByCep(anyString())).thenReturn(mockAddressRequestDTO());
         when(addressRepository.save(validAddress)).thenReturn(validAddress);
 
-        Address sut = service.findOrCreateAddressByCep("01001-000");
+        Address sut = service.findOrCreateAddress("01001-000");
 
         assertThat(sut).isNotNull();
         assertThat(sut).isEqualTo(validAddress);
     }
 
     @Test
-    public void findOrCreateAddressByCep_WithValidDataAndNonExistingCep_ThrowsException() {
+    public void findOrCreateAddress_WithValidDataAndNonExistingCep_ThrowsException() {
         when(addressRepository.findByCep(anyString())).thenReturn(Optional.empty());
         when(viaCepClientConsumer.getAddressByCep(anyString())).thenReturn(mockInvalidAddressRequestDTO());
 
-        assertThatThrownBy(() -> service.findOrCreateAddressByCep("00000-000"))
+        assertThatThrownBy(() -> service.findOrCreateAddress("00000-000"))
                 .isInstanceOf(AddressNotFoundException.class);
     }
 
     @Test
-    public void findOrCreateAddressByCep_WithInvalidCepFormat_ThrowsException() {
+    public void findOrCreateAddress_WithInvalidFormat_ThrowsException() {
         final String invalidCep = "01001-00";
 
-        assertThatThrownBy(() -> service.findOrCreateAddressByCep(invalidCep))
+        assertThatThrownBy(() -> service.findOrCreateAddress(invalidCep))
                 .isInstanceOf(AddressFormatNotValidException.class);
     }
 }
