@@ -27,10 +27,10 @@ public class AddressController {
     private final JwtTokenService jwtService;
 
     @Operation(summary = "Recuperar informações de um endereço.",
-            description = "Recurso para recuperar um endereço através do CEP (Código Postal).",
+            description = "Recurso para recuperar um endereço através do CEP (Código Postal) ou Id (Identificador).",
             security = @SecurityRequirement(name = "BearerTokenAuthentication"),
             parameters = {
-                    @Parameter(name = "cep", description = "CEP (Código Postal) do endereço para consulta.",
+                    @Parameter(name = "value", description = "CEP ou Id do endereço para consulta.",
                             in = ParameterIn.PATH, required = true),
                     @Parameter(name = "Authorization", description = "Bearer Token para autenticação.",
                             in = ParameterIn.HEADER, required = true)
@@ -50,13 +50,13 @@ public class AddressController {
                     )
             }
     )
-    @GetMapping("/{cep}")
-    public ResponseEntity<?> getAddressByCep(@PathVariable("cep") String cep,
-                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    @GetMapping("/{value}")
+    public ResponseEntity<?> getOrCreateAddress(@PathVariable("value") String value,
+                                                @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             final String jwtToken = authorizationHeader.substring(7);
             if (jwtService.resolveToken(jwtToken) != null) {
-                final AddressResponseDTO response = service.findOrCreateAddressByCep(cep).toDTO();
+                final AddressResponseDTO response = service.findOrCreateAddress(value).toDTO();
                 return ResponseEntity.ok(response);
             }
         }

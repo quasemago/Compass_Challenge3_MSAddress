@@ -19,11 +19,17 @@ public class AddressService {
     private final ViaCepClientConsumer viaCepConsumer;
 
     @Transactional
-    public Address findOrCreateAddressByCep(String cep) {
-        if (!cep.matches("\\d{5}-\\d{3}")) {
-            throw new AddressFormatNotValidException("O formato do CEP deve ser 99999-999.");
+    public Address findOrCreateAddress(String value) {
+        if (value.matches("\\d+")) {
+            return findAddressById(Long.parseLong(value));
         }
+        if (value.matches("\\d{5}-\\d{3}")) {
+            return findOrCreateAddressByCep(value);
+        }
+        throw new AddressFormatNotValidException("O valor informado não é um CEP válido (99999-000) ou um Id!");
+    }
 
+    private Address findOrCreateAddressByCep(String cep) {
         Optional<Address> existingAddress = repository.findByCep(cep);
         if (existingAddress.isPresent()) {
             return existingAddress.get();
@@ -36,5 +42,10 @@ public class AddressService {
 
         final Address savedAddress = new Address(request.getStreet(), request.getCity(), request.getState(), request.getCep());
         return repository.save(savedAddress);
+    }
+
+    private Address findAddressById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new AddressNotFoundException("O endereço informado não foi encontrado!"));
     }
 }
