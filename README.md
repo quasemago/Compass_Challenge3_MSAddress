@@ -17,6 +17,22 @@ O projeto foi desenvolvido por **Bruno Patrick Formehl Ronning**.
 | bruno.ronning.pb@compasso.com.br     | quasemago          |
 
 ## Sumário
+- [Challenge 3 - Gerenciamento de Usuários: MSAddress (CompassUOL)](#challenge-3---gerenciamento-de-usuários-msaddress-compassuol)
+    - [Autor do Projeto](#autor-do-projeto)
+    - [Tecnologias Utilizadas](#tecnologias-utilizadas)
+      - [Dependências](#dependências)
+    - [Microsserviço de Endereços (MSAddress)](#microsserviço-de-endereços-msaddress)
+        - [Estrutura do banco de dados](#estrutura-do-banco-de-dados)
+        - [Regras de Negócio](#regras-de-negócio)
+      - [Endpoints](#endpoints)
+      - [Payloads](#payloads)
+      - [Fluxo de erros](#fluxo-de-erros)
+    - [Como executar o projeto](#como-executar-o-projeto)
+        - [Pré-configurações](#pré-configurações)
+    - [Executando o projeto (Terminal)](#executando-o-projeto-terminal)
+        - [Projeto em execução](#projeto-em-execução)
+        - [Arquivo Swagger](#arquivo-swagger)
+    - [Considerações Finais](#considerações-finais)
 
 ## Tecnologias Utilizadas
 - Java JDK 17
@@ -98,6 +114,7 @@ Algumas situações tratadas pelo fluxo de erros são:
     }
     ```
 
+---
 # Como executar o projeto
 O projeto foi desenvolvido utilizando a linguagem de programação Java, utilizando o Java Development Kit (JDK) na versão 17.
 Portanto, para executar o projeto, é necessário ter o JDK 17 instalado na máquina, que pode ser baixado através do link: [Download Java JDK 17](https://www.oracle.com/java/technologies/downloads/#java17)
